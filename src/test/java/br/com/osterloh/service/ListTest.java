@@ -4,8 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -49,5 +49,16 @@ class ListTest {
         when(list.get(anyInt())).thenReturn("John");
 
         assertEquals("John", list.get(anyInt()));
+    }
+
+    @Test
+    void testMockingListWhenThrowsAnException() {
+
+        var list = mock(List.class);
+        when(list.get(anyInt())).thenThrow(new RuntimeException("Foo Bar!"));
+
+        assertThrows(RuntimeException.class, () ->
+                list.get(any()),
+                "Should have throw an RuntimeException");
     }
 }
