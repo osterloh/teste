@@ -10,6 +10,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.atLeastOnce;
 
 class CourseBusinessMockWithBDDTest {
 
@@ -43,6 +48,20 @@ class CourseBusinessMockWithBDDTest {
         var filteredCourses = business.retrieveCoursesRelatedToSpring("John");
 
         assertThat(filteredCourses.size(), is(4));
+    }
+
+    @Test
+    void testDeleteCoursesNotRelatedToSpringUsingMockitoVerifyShouldCallMethodDeleteCourse() {
+        given(mockService.retrieveCourses("John")).willReturn(courses);
+
+        business.deleteCoursesNotRelatedToSpring("John");
+
+//        verify(mockService).deleteCourse("Agile Desmistificado com Scrum, XP, Kanban e Trello");
+//        verify(mockService, times(1)).deleteCourse("Agile Desmistificado com Scrum, XP, Kanban e Trello");    //pode passar apenas uma vez
+//        verify(mockService, atLeast(1)).deleteCourse("Agile Desmistificado com Scrum, XP, Kanban e Trello");  //pode passar apenas uma vez
+        verify(mockService, atLeastOnce()).deleteCourse("Agile Desmistificado com Scrum, XP, Kanban e Trello"); //passa alguma vez
+        verify(mockService).deleteCourse("Arquitetura de Microsserviços do 0 com ASP.NET, .NET 6 e C#");
+        verify(mockService, never()).deleteCourse("Microsserviços do 0 com Spring Cloud, Kotlin e Docker");
     }
 
 }

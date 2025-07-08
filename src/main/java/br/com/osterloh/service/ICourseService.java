@@ -6,4 +6,5 @@ public interface ICourseService {
 
     List<String> retrieveCourses(String student);
     List<String> doSomething(String student);
+    void deleteCourse(String course);
 }
