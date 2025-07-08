@@ -9,6 +9,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.never;
@@ -62,6 +63,17 @@ class CourseBusinessMockWithBDDTest {
         verify(mockService, atLeastOnce()).deleteCourse("Agile Desmistificado com Scrum, XP, Kanban e Trello"); //passa alguma vez
         verify(mockService).deleteCourse("Arquitetura de Microsserviços do 0 com ASP.NET, .NET 6 e C#");
         verify(mockService, never()).deleteCourse("Microsserviços do 0 com Spring Cloud, Kotlin e Docker");
+    }
+
+    @Test
+    void testDeleteCoursesNotRelatedToSpringUsingMockitoVerifyShouldCallMethodDeleteCourseV2() {
+        given(mockService.retrieveCourses("John")).willReturn(courses);
+
+        business.deleteCoursesNotRelatedToSpring("John");
+
+        then(mockService).should().deleteCourse("Agile Desmistificado com Scrum, XP, Kanban e Trello");
+        then(mockService).should().deleteCourse("Arquitetura de Microsserviços do 0 com ASP.NET, .NET 6 e C#");
+        then(mockService).should(never()).deleteCourse("Microsserviços do 0 com Spring Cloud, Kotlin e Docker");
     }
 
 }
