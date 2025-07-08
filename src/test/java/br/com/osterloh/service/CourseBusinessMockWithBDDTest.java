@@ -2,6 +2,7 @@ package br.com.osterloh.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -69,11 +70,36 @@ class CourseBusinessMockWithBDDTest {
     void testDeleteCoursesNotRelatedToSpringUsingMockitoVerifyShouldCallMethodDeleteCourseV2() {
         given(mockService.retrieveCourses("John")).willReturn(courses);
 
+        String agileCourse = "Agile Desmistificado com Scrum, XP, Kanban e Trello";
+        String architetureCourse = "Arquitetura de Microsserviços do 0 com ASP.NET, .NET 6 e C#";
+        String msSpringCourse = "Microsserviços do 0 com Spring Cloud, Kotlin e Docker";
+
         business.deleteCoursesNotRelatedToSpring("John");
 
-        then(mockService).should().deleteCourse("Agile Desmistificado com Scrum, XP, Kanban e Trello");
-        then(mockService).should().deleteCourse("Arquitetura de Microsserviços do 0 com ASP.NET, .NET 6 e C#");
-        then(mockService).should(never()).deleteCourse("Microsserviços do 0 com Spring Cloud, Kotlin e Docker");
+        then(mockService).should().deleteCourse(agileCourse);
+        then(mockService).should().deleteCourse(architetureCourse);
+        then(mockService).should(never()).deleteCourse(msSpringCourse);
+    }
+
+    @Test
+    void testDeleteCoursesNotRelatedToSpringCapturingArgumentsShouldCallMethodDeleteCourseV2() {
+//        courses = Arrays.asList(
+//                "Agile Desmistificado com Scrum, XP, Kanban e Trello",
+//                "REST API's RESTFul do 0 à Azure com ASP.NET Core 5 e Docker"
+//        );
+
+        given(mockService.retrieveCourses("John")).willReturn(courses);
+
+        ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
+
+//        String agileCourse = "Agile Desmistificado com Scrum, XP, Kanban e Trello";
+
+        business.deleteCoursesNotRelatedToSpring("John");
+
+//        then(mockService).should().deleteCourse(argumentCaptor.capture());
+        then(mockService).should(times(7)).deleteCourse(argumentCaptor.capture());
+//        assertThat(argumentCaptor.getValue().size(), is(agileCourse));
+        assertThat(argumentCaptor.getAllValues().size(), is(7));
     }
 
 }
